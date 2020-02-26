@@ -27,6 +27,37 @@ const startApp = async () => {
   ]);
 
   if (fs.existsSync('./img/' + input.inputImage)) {
+    const ifAlter = await inquirer.prompt([
+      {
+        name: 'question',
+        message: 'Do you want to filter the photo?',
+        type: 'confirm'
+      }
+    ]);
+    if (ifAlter.question) {
+      const alter = await inquirer.prompt([
+        {
+          name: 'alterations',
+          type: 'list',
+          choices: [
+            'make image brighter',
+            'increase contrast',
+            'make image b&w',
+            'invert image'
+          ]
+        }
+      ]);
+      if (alter.alterations === 'make image brighter') {
+        addFilter('./img/' + input.inputImage, 'brightness');
+      } else if (alter.alterations === 'increase contrast') {
+        addFilter('./img/' + input.inputImage, 'contrast');
+      } else if (alter.alterations === 'make image b&w') {
+        addFilter('./img/' + input.inputImage, 'b&w');
+      } else if (alter.alterations === 'invert image') {
+        addFilter('./img/' + input.inputImage, 'invert');
+      }
+    }
+
     const options = await inquirer.prompt([
       {
         name: 'watermarkType',
@@ -133,4 +164,18 @@ const addImageWatermarkToImage = async function(
 const prepareOutputFilename = function(name) {
   const [firstName, extension] = name.split('.');
   return `${firstName}-with-watermark.${extension}`;
+};
+
+const addFilter = async function(file, filter) {
+  const image = await Jimp.read(file);
+  if (filter === 'brightness') {
+    image.brightness(0.5);
+  } else if (filter === 'contrast') {
+    image.contrast(0.5);
+  } else if (filter === 'b&w') {
+    image.grayscale();
+  } else if (filter === 'invert') {
+    image.invert();
+  }
+  await image.quality(100).writeAsync(file);
 };
