@@ -1,0 +1,11 @@
+{
+  "name": "watermark",
+  "version": "1.0.0",
+  "main": "app.js",
+  "repository": "git@github.com:maariaantonina/watermark.git",
+  "author": "Maria Kasińska <mariakasinska17@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "jimp": "0.6.4"
+  }
+}
